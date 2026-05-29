@@ -2,9 +2,16 @@
 @section('title', 'Kalender Tanam')
 @section('content')
 <div class="page-container">
-    <div class="page-header">
-        <h1 class="page-title">📅 Kalender Tanam</h1>
-        <p class="page-subtitle">Panduan waktu tanam optimal berdasarkan musim dan komoditas</p>
+    <div class="page-header flex-between">
+        <div>
+            <h1 class="page-title">📅 Kalender Tanam</h1>
+            <p class="page-subtitle">Panduan waktu tanam optimal berdasarkan musim dan komoditas</p>
+        </div>
+        @auth
+            @if(auth()->user()->role == 'dinas' || auth()->user()->role == 'penyuluh')
+                <a href="{{ route('kalender-tanam.create') }}" class="btn btn-primary">Tambah Kalender Tanam</a>
+            @endif
+        @endauth
     </div>
 
     @php

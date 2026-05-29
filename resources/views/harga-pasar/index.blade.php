@@ -4,6 +4,11 @@
 <div class="page-container">
     <div class="page-header flex-between">
         <div><h1 class="page-title">💰 Harga Pasar Terkini</h1><p class="page-subtitle">Data harga komoditas pertanian hari ini</p></div>
+        @auth
+            @if(auth()->user()->role == 'dinas' || auth()->user()->role == 'penyuluh')
+                <a href="{{ route('harga-pasar.create') }}" class="btn btn-primary">Input Harga Pasar</a>
+            @endif
+        @endauth
     </div>
 
     {{-- HARGA TERKINI CARDS --}}

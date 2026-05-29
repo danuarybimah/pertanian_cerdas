@@ -24,9 +24,29 @@ class User extends Authenticatable
         ];
     }
 
-    public function isPetani(): bool    { return $this->role === 'petani'; }
-    public function isPenyuluh(): bool  { return $this->role === 'penyuluh'; }
-    public function isDinas(): bool     { return $this->role === 'dinas'; }
+    /**
+     * Mengecek apakah user memiliki role petani.
+     */
+    public function isPetani(): bool
+    {
+        return $this->role === 'petani';
+    }
+
+    /**
+     * Mengecek apakah user memiliki role penyuluh.
+     */
+    public function isPenyuluh(): bool
+    {
+        return $this->role === 'penyuluh';
+    }
+
+    /**
+     * Mengecek apakah user memiliki role dinas.
+     */
+    public function isDinas(): bool
+    {
+        return $this->role === 'dinas';
+    }
 
     public function getRoleLabelAttribute(): string
     {

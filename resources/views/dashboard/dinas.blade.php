@@ -57,36 +57,18 @@
     </div>
 
     {{-- INPUT HARGA PASAR --}}
-    <div class="card mb-6">
-        <div class="card-header"><span class="card-title">💰 Input Harga Pasar</span></div>
-        <div class="card-body">
-            <form action="{{ route('harga-pasar.store') }}" method="POST">
-                @csrf
-                <div class="grid grid-4">
-                    <div class="form-group">
-                        <label class="form-label">Komoditas</label>
-                        <select name="komoditas_id" class="form-select" required>
-                            <option value="">Pilih komoditas</option>
-                            @foreach(\App\Models\Komoditas::where('aktif',true)->orderBy('nama')->get() as $k)
-                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Harga (Rp/{{ 'kg' }})</label>
-                        <input type="number" name="harga" class="form-control" placeholder="5000" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Lokasi Pasar</label>
-                        <input type="text" name="lokasi_pasar" class="form-control" placeholder="Pasar Johar" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Simpan Data Harga</button>
-            </form>
+    <div class="card mb-6" style="background: linear-gradient(135deg, #f0faf4 0%, #ffffff 100%); border-left: 5px solid var(--green-600); border-radius: 16px;">
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding: 24px 32px;">
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--green-800); margin: 0; display: flex; align-items: center; gap: 8px;">
+                    💰 Input Harga Pasar Komoditas
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--gray-600); margin: 4px 0 0;">Catat dan publikasikan harga komoditas pangan dari berbagai pasar sekaligus.</p>
+            </div>
+            <a href="{{ route('harga-pasar.create') }}" class="btn btn-primary" style="border-radius: 12px; padding: 12px 24px; box-shadow: 0 4px 12px rgba(45, 122, 79, 0.2); display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                <span>Mulai Input Harga</span>
+            </a>
         </div>
     </div>
 </div>

@@ -27,14 +27,16 @@ class KonsultasiRepository implements KonsultasiRepositoryInterface
 
     public function byPenyuluh(int $penyuluhId)
     {
-        return $this->model->where('penyuluh_id', $penyuluhId)
-            ->orWhere('status', 'open')
+        return $this->model->where(function($query) use ($penyuluhId) {
+                $query->where('penyuluh_id', $penyuluhId)
+                      ->orWhere('status', '!=', 'closed');
+            })
             ->with(['petani','jawaban'])->orderByDesc('created_at')->get();
     }
 
     public function open()
     {
-        return $this->model->where('status', 'open')
+        return $this->model->where('status', '!=', 'closed')
             ->with('petani')->orderByDesc('created_at')->get();
     }
 

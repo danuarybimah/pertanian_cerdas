@@ -13,59 +13,14 @@ class UserSeeder extends Seeder
         $users = [
             // ===== DINAS =====
             [
-                'name'     => 'Dinas Pertanian Jawa Tengah',
-                'email'    => 'dinas@sipertani.id',
-                'password' => Hash::make('password123'),
+                'name'     => 'Dinas Pertanian Jawa Timur',
+                'email'    => 'dinasjatim@gmail.com',
+                'password' => Hash::make('password'),
                 'role'     => 'dinas',
-                'wilayah'  => 'Jawa Tengah',
-                'bio'      => 'Dinas Pertanian dan Perkebunan Provinsi Jawa Tengah.',
-            ],
-
-            // ===== PENYULUH =====
-            [
-                'name'     => 'Pak Hendra Penyuluh',
-                'email'    => 'hendra@sipertani.id',
-                'password' => Hash::make('password123'),
-                'role'     => 'penyuluh',
-                'wilayah'  => 'Semarang',
-                'bio'      => 'Penyuluh pertanian lapangan wilayah Semarang.',
-            ],
-            [
-                'name'     => 'Bu Sari Penyuluh',
-                'email'    => 'sari@sipertani.id',
-                'password' => Hash::make('password123'),
-                'role'     => 'penyuluh',
-                'wilayah'  => 'Demak',
-                'bio'      => 'Penyuluh pertanian lapangan wilayah Demak.',
-            ],
-
-            // ===== PETANI =====
-            [
-                'name'     => 'Budi Santoso',
-                'email'    => 'budi@sipertani.id',
-                'password' => Hash::make('password123'),
-                'role'     => 'petani',
-                'wilayah'  => 'Semarang',
-                'bio'      => 'Petani padi di wilayah Semarang.',
-            ],
-            [
-                'name'     => 'Slamet Riyadi',
-                'email'    => 'slamet@sipertani.id',
-                'password' => Hash::make('password123'),
-                'role'     => 'petani',
-                'wilayah'  => 'Demak',
-                'bio'      => 'Petani jagung dan kedelai di wilayah Demak.',
-            ],
-            [
-                'name'     => 'Waginem',
-                'email'    => 'waginem@sipertani.id',
-                'password' => Hash::make('password123'),
-                'role'     => 'petani',
-                'wilayah'  => 'Kendal',
-                'bio'      => 'Petani sayuran di wilayah Kendal.',
+                'wilayah'  => 'Jawa Timur',
+                'bio'      => 'Dinas Pertanian dan Perkebunan Provinsi Jawa Timur.',
             ],
         ];
-
         foreach ($users as $data) {
             User::updateOrCreate(
                 ['email' => $data['email']],
@@ -73,6 +28,6 @@ class UserSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ UserSeeder selesai: 1 dinas, 2 penyuluh, 3 petani.');
+        $this->command->info('UserSeeder selesai: 1 dinas.');
     }
 }

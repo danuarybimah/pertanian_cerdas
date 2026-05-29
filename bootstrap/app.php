@@ -16,5 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
+            return redirect()->back()
+                ->withInput($request->except(['password', 'password_confirmation', '_token']))
+                ->with('error', 'Sesi Anda telah berakhir (Token CSRF kedaluwarsa). Silakan coba lagi.');
+        });
     })->create();

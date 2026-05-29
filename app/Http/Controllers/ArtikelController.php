@@ -41,14 +41,30 @@ class ArtikelController extends Controller
             'ringkasan'=> 'nullable|string|max:300',
             'kategori' => 'required|in:panduan,berita,tips,teknologi,cuaca',
             'published'=> 'boolean',
+            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
+
+        try {
+            if ($request->hasFile('gambar')) {
+                $file = $request->file('gambar');
+                $filename = time() . '_' . \Illuminate\Support\Str::slug($request->judul) . '.' . $file->getClientOriginalExtension();
+                \Illuminate\Support\Facades\File::ensureDirectoryExists(public_path('uploads/artikel'));
+                $file->move(public_path('uploads/artikel'), $filename);
+                $data['gambar'] = 'uploads/artikel/' . $filename;
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal mengunggah gambar: ' . $e->getMessage());
+        }
+
         $data['user_id']      = Auth::id();
         $data['published']    = $request->boolean('published');
         $data['published_at'] = $data['published'] ? now() : null;
 
-        $artikel = $this->artikelRepo->create($data);
-        return redirect()->route('artikel.show', $artikel->slug)
-            ->with('success', 'Artikel berhasil dipublikasikan!');
+        $this->artikelRepo->create($data);
+        return redirect()->route('artikel.index')
+            ->with('success', 'Artikel berhasil disimpan!');
     }
 
     public function edit(int $id)
@@ -69,12 +85,32 @@ class ArtikelController extends Controller
             'ringkasan'=> 'nullable|string|max:300',
             'kategori' => 'required|in:panduan,berita,tips,teknologi,cuaca',
             'published'=> 'boolean',
+            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
+
+        try {
+            if ($request->hasFile('gambar')) {
+                // Hapus gambar lama jika ada
+                if ($artikel->gambar && file_exists(public_path($artikel->gambar))) {
+                    @unlink(public_path($artikel->gambar));
+                }
+                $file = $request->file('gambar');
+                $filename = time() . '_' . \Illuminate\Support\Str::slug($request->judul) . '.' . $file->getClientOriginalExtension();
+                \Illuminate\Support\Facades\File::ensureDirectoryExists(public_path('uploads/artikel'));
+                $file->move(public_path('uploads/artikel'), $filename);
+                $data['gambar'] = 'uploads/artikel/' . $filename;
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui gambar: ' . $e->getMessage());
+        }
+
         $data['published']    = $request->boolean('published');
         $data['published_at'] = $data['published'] ? ($artikel->published_at ?? now()) : null;
 
         $this->artikelRepo->update($id, $data);
-        return redirect()->route('artikel.show', $artikel->slug)->with('success', 'Artikel diperbarui!');
+        return redirect()->route('artikel.index')->with('success', 'Artikel diperbarui!');
     }
 
     public function destroy(int $id)

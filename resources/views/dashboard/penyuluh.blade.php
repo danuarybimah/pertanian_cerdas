@@ -8,7 +8,7 @@
     </div>
 
     <div class="grid grid-4 mb-6">
-        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value">{{ $konsultasiOpen->count() }}</div><div class="stat-label">Menunggu Jawaban</div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value">{{ $konsultasiOpen->where('status', 'open')->count() }}</div><div class="stat-label">Menunggu Jawaban</div></div>
         <div class="stat-card gold"><div class="stat-icon">📰</div><div class="stat-value">{{ $artikelSaya->count() }}</div><div class="stat-label">Artikel Saya</div></div>
         <div class="stat-card purple"><div class="stat-icon">👥</div><div class="stat-value">{{ $statistik['total_petani'] }}</div><div class="stat-label">Total Petani</div></div>
         <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-value">{{ $statistik['total_konsultasi'] }}</div><div class="stat-label">Total Konsultasi</div></div>
@@ -45,7 +45,7 @@
         {{-- KONSULTASI MENUNGGU --}}
         <div class="card">
             <div class="card-header">
-                <span class="card-title">⏳ Konsultasi Menunggu Jawaban</span>
+                <span class="card-title">💬 Diskusi Konsultasi Aktif</span>
                 <a href="{{ route('konsultasi.index') }}" class="btn btn-outline btn-sm">Semua</a>
             </div>
             <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
@@ -54,7 +54,7 @@
                     <div class="konsultasi-item">
                         <div class="flex-between mb-2">
                             <div class="konsultasi-title">{{ Str::limit($k->judul,45) }}</div>
-                            <span class="badge badge-warning">Open</span>
+                            <span class="badge badge-{{ $k->status_color }}">{{ $k->status_label }}</span>
                         </div>
                         <div class="konsultasi-meta">
                             <span>👤 {{ $k->petani?->name }}</span>
@@ -64,7 +64,7 @@
                     </div>
                 </a>
                 @empty
-                <div class="empty-state"><div class="empty-state-icon">✅</div><div>Semua konsultasi sudah dijawab!</div></div>
+                <div class="empty-state"><div class="empty-state-icon">✅</div><div>Tidak ada konsultasi aktif.</div></div>
                 @endforelse
             </div>
         </div>

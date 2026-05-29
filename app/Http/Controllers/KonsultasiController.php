@@ -54,6 +54,17 @@ class KonsultasiController extends Controller
     {
         abort_unless(Auth::user()->isPenyuluh() || Auth::user()->isDinas(), 403);
         $request->validate(['jawaban' => 'required|string|min:10']);
+        
+        $konsultasi = $this->konsultasiRepo->findById($id);
+        if ($konsultasi->status === 'closed') {
+            return back()->with('error', 'Konsultasi ini telah ditutup.');
+        }
+
+        $sudahJawab = $konsultasi->jawaban->contains('user_id', Auth::id());
+        if ($sudahJawab) {
+            return back()->with('error', 'Anda sudah memberikan jawaban untuk konsultasi ini.');
+        }
+
         $this->konsultasiRepo->addJawaban($id, [
             'user_id' => Auth::id(),
             'jawaban' => $request->jawaban,

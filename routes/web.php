@@ -9,6 +9,8 @@ use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\KonsultasiController;
 use App\Http\Controllers\KalenderTanamController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserManagementController;
 
 // ==================== PUBLIC ROUTES ====================
 Route::get('/', function () {
@@ -23,7 +25,6 @@ Route::get('/', function () {
 
 Route::get('/harga-pasar',           [HargaPasarController::class, 'index'])->name('harga-pasar.index');
 Route::get('/artikel',               [ArtikelController::class, 'index'])->name('artikel.index');
-Route::get('/artikel/{slug}',        [ArtikelController::class, 'show'])->name('artikel.show');
 Route::get('/kalender-tanam',        [KalenderTanamController::class, 'index'])->name('kalender-tanam.index');
 
 // ==================== AUTH ROUTES ====================
@@ -55,6 +56,22 @@ Route::middleware('auth')->group(function () {
     Route::put('/artikel/{id}',            [ArtikelController::class, 'update'])->middleware('role:penyuluh,dinas')->name('artikel.update');
     Route::delete('/artikel/{id}',         [ArtikelController::class, 'destroy'])->middleware('role:penyuluh,dinas')->name('artikel.destroy');
 
-    // Harga - input by dinas
-    Route::post('/harga-pasar',            [HargaPasarController::class, 'store'])->middleware('role:dinas')->name('harga-pasar.store');
+    // Harga - input by dinas & penyuluh
+    Route::get('/harga-pasar/create',      [HargaPasarController::class, 'create'])->middleware('role:dinas,penyuluh')->name('harga-pasar.create');
+    Route::post('/harga-pasar',            [HargaPasarController::class, 'store'])->middleware('role:dinas,penyuluh')->name('harga-pasar.store');
+
+    // Kalender Tanam - management
+    Route::get('/kalender-tanam/create',   [KalenderTanamController::class, 'create'])->middleware('role:dinas,penyuluh')->name('kalender-tanam.create');
+    Route::post('/kalender-tanam',         [KalenderTanamController::class, 'store'])->middleware('role:dinas,penyuluh')->name('kalender-tanam.store');
+
+    // Profile Settings
+    Route::get('/profil',                  [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profil',                 [ProfileController::class, 'update'])->name('profile.update');
+
+    // User Management (Dinas only)
+    Route::get('/dinas/users',             [UserManagementController::class, 'index'])->middleware('role:dinas')->name('dinas.users.index');
+    Route::post('/dinas/users/{id}/role',  [UserManagementController::class, 'updateRole'])->middleware('role:dinas')->name('dinas.users.update-role');
 });
+
+// ==================== PUBLIC WILDCARD ROUTES ====================
+Route::get('/artikel/{slug}',              [ArtikelController::class, 'show'])->name('artikel.show');

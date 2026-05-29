@@ -44,13 +44,19 @@
             <div style="background:var(--green-50);color:var(--green-700);font-size:.75rem;font-weight:700;padding:6px 12px;border-radius:6px;margin-bottom:12px;display:inline-block;">⭐ Jawaban Terbaik</div>
             @endif
             <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
-                <div style="width:36px;height:36px;background:var(--gold-100);border-radius:50%;display:grid;place-items:center;font-size:1rem;">👨‍🏫</div>
+                <div style="width:40px;height:40px;background:var(--green-100);color:var(--green-800);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;border:2px solid var(--white);box-shadow:var(--shadow-sm);">
+                    {{ strtoupper(substr($j->penjawab?->name ?? 'P', 0, 2)) }}
+                </div>
                 <div>
-                    <div style="font-weight:600;font-size:.9rem;">{{ $j->penjawab?->name }}</div>
-                    <div style="font-size:.75rem;color:var(--gray-400);">{{ $j->penjawab?->role_label }} · {{ $j->created_at->diffForHumans() }}</div>
+                    <div style="font-weight:600;font-size:.9rem;color:var(--gray-800);">{{ $j->penjawab?->name }}</div>
+                    <div style="font-size:.75rem;color:var(--gray-400);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                        <span class="role-badge {{ $j->penjawab?->role }}" style="font-size:0.65rem;padding:2px 8px;border-radius:12px;">{{ $j->penjawab?->role_label }}</span>
+                        <span>·</span>
+                        <span>{{ $j->created_at->diffForHumans() }}</span>
+                    </div>
                 </div>
             </div>
-            <p style="font-size:.95rem;line-height:1.8;color:var(--gray-700);">{{ $j->jawaban }}</p>
+            <p style="font-size:.95rem;line-height:1.8;color:var(--gray-700);white-space:pre-line;">{{ $j->jawaban }}</p>
         </div>
     </div>
     @empty
@@ -59,21 +65,34 @@
 
     {{-- FORM JAWABAN --}}
     @auth @if((auth()->user()->isPenyuluh() || auth()->user()->isDinas()) && $konsultasi->status !== 'closed')
-    <div class="card">
-        <div class="card-header"><span class="card-title">✍️ Berikan Jawaban</span></div>
-        <div class="card-body">
-            @if($errors->any())<div class="alert alert-error">{{ $errors->first() }}</div>@endif
-            <form action="{{ route('konsultasi.jawab', $konsultasi->id) }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <textarea name="jawaban" class="form-control" rows="5" placeholder="Tulis jawaban Anda yang informatif dan jelas..." required></textarea>
+        @php
+            $sudahJawab = $konsultasi->jawaban->contains('user_id', auth()->id());
+        @endphp
+        @if(!$sudahJawab)
+            <div class="card">
+                <div class="card-header"><span class="card-title">✍️ Berikan Jawaban</span></div>
+                <div class="card-body">
+                    @if($errors->any())<div class="alert alert-error">{{ $errors->first() }}</div>@endif
+                    <form action="{{ route('konsultasi.jawab', $konsultasi->id) }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <textarea name="jawaban" class="form-control" rows="5" placeholder="Tulis jawaban Anda yang informatif dan jelas..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Kirim Jawaban</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">Kirim Jawaban</button>
-            </form>
+            </div>
+        @else
+            <div class="alert alert-success" style="display:flex;align-items:center;gap:10px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">
+                <span style="font-size:1.2rem;">✅</span>
+                <span>Anda telah mengirimkan jawaban untuk konsultasi ini. Terima kasih atas kontribusi Anda!</span>
+            </div>
+        @endif
+    @elseif($konsultasi->status === 'closed')
+        <div class="alert alert-info" style="display:flex;align-items:center;gap:10px;background:#f0f9ff;color:#0284c7;border:1px solid #bae6fd;">
+            <span style="font-size:1.2rem;">🔒</span>
+            <span>Konsultasi ini telah ditutup.</span>
         </div>
-    </div>
-    @elseif(auth()->user()->isPetani() && $konsultasi->status === 'closed')
-    <div class="alert alert-info">🔒 Konsultasi ini telah ditutup.</div>
     @endif @endauth
 </div>
 @endsection

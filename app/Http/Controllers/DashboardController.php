@@ -21,8 +21,16 @@ class DashboardController extends Controller
 
     public function index()
     {
+        /** @var \App\Models\User $user */
         $user   = Auth::user();
-        $cuaca  = $this->cuacaService->getData();
+        $wilayahMentah = $user->wilayah ?? 'Jawa Timur';
+        if (str_contains($wilayahMentah, ',')) {
+            $wilayahUser = trim(explode(',', $wilayahMentah)[0]);
+        } else {
+            $wilayahUser = str_replace(['Dinas Pertanian dan Perkebunan Provinsi', 'Dinas Pertanian', 'dan Perkebunan'], '', $wilayahMentah);
+            $wilayahUser = trim($wilayahUser);
+        }
+        $cuaca  = $this->cuacaService->getData($wilayahUser);
         $harga  = $this->hargaRepo->terkini()->take(6);
         $statistik = $this->statistikService->getDampak();
 
