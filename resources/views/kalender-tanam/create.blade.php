@@ -206,14 +206,23 @@
                 <div class="grid grid-2">
                     <!-- Komoditas -->
                     <div class="form-group">
-                        <label class="form-label" for="komoditas_id">Komoditas <span>*</span></label>
-                        <select name="komoditas_id" id="komoditas_id" class="form-select @error('komoditas_id') is-invalid @enderror" required>
-                            <option value="" disabled selected>-- Pilih Komoditas --</option>
+                        <label class="form-label" for="komoditas">Komoditas <span>*</span></label>
+                        <input
+                            list="komoditas-list"
+                            name="komoditas"
+                            id="komoditas"
+                            class="form-control @error('komoditas') is-invalid @enderror"
+                            value="{{ old('komoditas') }}"
+                            placeholder="Ketik atau pilih komoditas..."
+                            autocomplete="off"
+                            required
+                        >
+                        <datalist id="komoditas-list">
                             @foreach($komoditas as $k)
-                            <option value="{{ $k->id }}" {{ old('komoditas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                                <option value="{{ $k->nama }}">
                             @endforeach
-                        </select>
-                        @error('komoditas_id')
+                        </datalist>
+                        @error('komoditas')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
                     </div>
@@ -277,7 +286,7 @@
                 <div class="grid grid-3">
                     <!-- Wilayah -->
                     <div class="form-group">
-                        <label class="form-label" for="wilayah">Wilayah Wilayah <span>*</span></label>
+                        <label class="form-label" for="wilayah">Wilayah <span>*</span></label>
                         <input
                             type="text"
                             name="wilayah"

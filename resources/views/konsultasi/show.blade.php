@@ -60,7 +60,7 @@
         </div>
     </div>
     @empty
-    <div class="card mb-4"><div class="card-body empty-state"><div class="empty-state-icon">🤔</div><div>Belum ada jawaban. Tunggu penyuluh menjawab.</div></div></div>
+    <div class="card mb-4"><div class="card-body empty-state"><div class="empty-state-icon"></div><div>Belum ada jawaban. Tunggu penyuluh menjawab.</div></div></div>
     @endforelse
 
     {{-- FORM JAWABAN --}}

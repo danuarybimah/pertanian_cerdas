@@ -35,8 +35,8 @@ class KalenderTanamController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'komoditas_id'       => 'required|exists:komoditas,id',
+        $validated = $request->validate([
+            'komoditas'          => 'required|string|max:255',
             'bulan_tanam'        => 'required|integer|between:1,12',
             'durasi_tanam'       => 'required|integer|min:1',
             'wilayah'            => 'required|string|max:100',
@@ -46,9 +46,35 @@ class KalenderTanamController extends Controller
             'produktivitas_rata' => 'nullable|numeric|min:0',
         ]);
 
-        KalenderTanam::create($data);
+        $komoditasName = trim($validated['komoditas']);
 
-        return redirect()->route('kalender-tanam.index', ['bulan' => $data['bulan_tanam']])
+        // Find or dynamically create the Komoditas record
+        $komoditasRecord = \App\Models\Komoditas::where('nama', $komoditasName)->first();
+
+        if (!$komoditasRecord) {
+            $baseSlug = \Illuminate\Support\Str::slug($komoditasName);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (\App\Models\Komoditas::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $komoditasRecord = \App\Models\Komoditas::create([
+                'nama'   => $komoditasName,
+                'slug'   => $slug,
+                'aktif'  => true,
+            ]);
+        }
+
+        // Map to data format expected by database
+        $storeData = $validated;
+        unset($storeData['komoditas']);
+        $storeData['komoditas_id'] = $komoditasRecord->id;
+
+        KalenderTanam::create($storeData);
+
+        return redirect()->route('kalender-tanam.index', ['bulan' => $storeData['bulan_tanam']])
             ->with('success', 'Kalender tanam berhasil ditambahkan!');
     }
 }

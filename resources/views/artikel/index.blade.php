@@ -53,7 +53,7 @@
                     </a>
                 @endforeach
             </div>
-            <div>{{ $artikel->links() }}</div>
+            <div>{{ $artikel->links('vendor.pagination.sipertani') }}</div>
         @else
             <div class="empty-state card card-body">
                 <div class="empty-state-icon">📰</div>
